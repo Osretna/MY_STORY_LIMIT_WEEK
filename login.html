@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول الموظفين والمدير</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e2f, #252540);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 2.5rem;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            box-shadow: none;
+        }
+
+        .btn-google {
+            background: white;
+            color: #333;
+            font-weight: bold;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-google:hover {
+            background: #f1f1f1;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card login-card shadow-lg">
+        <div class="text-center mb-4">
+            <h3 class="fw-bold mb-3">لوحة التحكم</h3>
+            <p class="text-white-50 small">سجل دخولك للمتابعة</p>
+        </div>
+
+        <!-- 1. دخول للمدير -->
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="small text-white-50 mb-1">البريد الإلكتروني</label>
+                <input type="email" id="email" class="form-control" placeholder="admin@store.com" required>
+            </div>
+            <div class="mb-3">
+                <label class="small text-white-50 mb-1">كلمة المرور</label>
+                <input type="password" id="password" class="form-control" placeholder="******" required>
+            </div>
+            <button type="submit" class="btn btn-warning w-100 fw-bold mb-3">دخول المدير</button>
+        </form>
+
+        <div class="text-center text-white-50 mb-3 small">--- أو للموظفين ---</div>
+
+        <!-- 2. دخول للموظفين (تم إصلاح الأيقونة) -->
+        <button onclick="employeeLogin()" class="btn btn-google w-100">
+            <i class="fa-brands fa-google text-danger fa-lg"></i> <span>دخول بحساب جوجل</span>
+        </button>
+
+        <div id="errorMsg" class="text-danger mt-3 text-center small fw-bold"></div>
+    </div>
+
+    <script type="module">
+        import { auth, signInWithEmailAndPassword, signInWithPopup, googleProvider, db, doc, getDoc, setDoc } from './js/firebase-config.js';
+
+        // دخول المدير (إيميل/باسورد)
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMsg');
+
+            errorDiv.innerText = "جاري التحقق...";
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then(async (userCredential) => {
+                    // 🟢 الحل الجذري لمشكلة الخروج: 
+                    // نقوم بحفظ صلاحية "admin" في الداتابيز فوراً عند الدخول
+                    try {
+                        await setDoc(doc(db, "users", userCredential.user.uid), {
+                            email: email,
+                            role: 'admin', // إعطاء الصلاحية
+                            name: 'المدير العام'
+                        }, { merge: true });
+
+                        window.location.href = "admin.html";
+                    } catch (err) {
+                        console.error(err);
+                        errorDiv.innerText = "حدث خطأ في حفظ الصلاحيات";
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    errorDiv.innerText = "بيانات الدخول غير صحيحة";
+                });
+        });
+
+        // دخول الموظفين
+        window.employeeLogin = async () => {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+
+                if (!userSnap.exists()) {
+                    await setDoc(userRef, {
+                        name: user.displayName, email: user.email, photo: user.photoURL, role: "customer"
+                    });
+                }
+                window.location.href = "admin.html";
+            } catch (error) {
+                document.getElementById('errorMsg').innerText = "فشل الدخول بجوجل";
+            }
+        };
+    </script>
+</body>
+
+</html>

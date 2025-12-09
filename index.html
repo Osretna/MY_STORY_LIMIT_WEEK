@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجري الاحترافي</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-warning" href="#"><i class="fa-solid fa-store"></i> المتجر</a>
+            <div class="d-flex align-items-center gap-2">
+
+                <!-- زر دخول جوجل الجديد -->
+                <button id="loginBtn" class="btn btn-outline-light btn-sm" onclick="googleLogin()">
+                    <i class="fa-brands fa-google"></i>
+                </button>
+                <div id="userProfile" class="d-none align-items-center text-white">
+                    <img id="userAvatar" src="" class="rounded-circle border border-warning"
+                        style="width:30px;height:30px;">
+                </div>
+
+                <button class="btn btn-outline-warning position-relative" onclick="showSection('cart')">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle"
+                        id="cartCount">0</span>
+                </button>
+                <a href="login.html" class="btn btn-outline-light btn-sm">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="page-section container my-4">
+        <!-- Slider -->
+        <div id="productCarousel" class="carousel slide mb-4 glass-card p-2" data-bs-ride="carousel">
+            <div class="carousel-inner rounded">
+                <div class="carousel-item active"><img
+                        src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200" alt="Sale"></div>
+                <div class="carousel-item"><img src="https://images.pexels.com/photos/5872364/pexels-photo-5872364.jpeg"
+                        alt="Tech"></div>
+                <div class="carousel-item"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200"
+                        alt="Shoes"></div>
+                <div class="carousel-item"><img
+                        src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200" alt="Headphones">
+                </div>
+                <div class="carousel-item"><img
+                        src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200" alt="Shopping"></div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
+                data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
+                data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+        </div>
+
+        <!-- Offers -->
+        <div id="offersSection" class="mb-5 d-none">
+            <h3 class="fw-bold text-warning mb-3"><i class="fa-solid fa-fire"></i> عروض وتخفيضات</h3>
+            <div class="row row-cols-2 row-cols-md-4 g-2 g-md-3" id="offersGrid"></div>
+            <hr class="text-white my-5">
+        </div>
+
+        <!-- Search -->
+        <div class="mb-4 position-relative z-3">
+            <div class="input-group glass-card overflow-hidden">
+                <span class="input-group-text bg-transparent border-0 text-white"><i class="fa fa-search"></i></span>
+                <input type="text" class="form-control bg-transparent text-white border-0" id="smartSearchInput"
+                    placeholder="ابحث..." autocomplete="off">
+            </div>
+            <div id="searchResults" class="search-dropdown glass-card"></div>
+        </div>
+
+        <!-- Categories -->
+        <div class="mb-4">
+            <h5 class="mb-3 text-white-50">تصفح الأقسام</h5>
+            <div id="categoriesWrapper" class="scroll-menu">
+                <div class="spinner-border spinner-border-sm text-light"></div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-2 g-md-3" id="productsGrid"></div>
+    </section>
+
+    <!-- Cart Section -->
+    <section id="cart" class="page-section d-none container my-5">
+        <div class="glass-card p-4">
+            <h2 class="mb-4 text-warning">سلة المشتريات</h2>
+            <div class="row">
+                <div class="col-md-7 mb-3">
+                    <div class="bg-white text-dark rounded p-3" id="cartItems"></div>
+                </div>
+                <div class="col-md-5">
+                    <div class="bg-dark bg-opacity-50 p-3 rounded">
+                        <h4 class="text-white">بيانات الشحن</h4>
+                        <form id="checkoutForm">
+                            <input type="text" id="c_name" class="form-control mb-2" placeholder="الاسم" required>
+                            <input type="tel" id="c_phone" class="form-control mb-2" placeholder="الهاتف" required>
+                            <select id="c_gov" class="form-select mb-2" required>
+                                <option value="" disabled selected>المحافظة</option>
+                            </select>
+                            <input type="text" id="c_address" class="form-control mb-3" placeholder="العنوان" required>
+                            <div class="coupon-box mb-3">
+                                <div class="input-group">
+                                    <input type="text" id="userCoupon"
+                                        class="form-control bg-dark text-white border-secondary"
+                                        placeholder="كود الخصم">
+                                    <button type="button" class="btn btn-warning" onclick="applyCoupon()">تطبيق</button>
+                                </div>
+                                <small id="couponMsg" class="d-block mt-1"></small>
+                            </div>
+                            <hr class="text-white">
+                            <div class="d-flex justify-content-between text-white mb-3"><span>الإجمالي:</span><span
+                                    class="fw-bold fs-5" id="totalPrice">0 EGP</span></div>
+                            <button type="submit" class="btn btn-success w-100 py-2 fw-bold"><i
+                                    class="fa-brands fa-whatsapp"></i> إتمام الطلب</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-outline-light mt-3" onclick="showSection('home')">عودة للتسوق</button>
+        </div>
+    </section>
+
+    <!-- Chat Button & Box (New) -->
+    <div class="chat-wrapper">
+        <button class="chat-btn" onclick="toggleChat()"><i class="fa-solid fa-headset fa-lg"></i></button>
+        <div class="chat-box glass-card d-none" id="chatBox">
+            <div class="chat-header p-3 border-bottom d-flex justify-content-between bg-dark rounded-top">
+                <span class="fw-bold text-warning">الدعم الفني</span>
+                <button class="btn-close btn-close-white btn-sm" onclick="toggleChat()"></button>
+            </div>
+            <div class="chat-body p-3" id="chatMessages">
+                <p class="text-center text-white-50 small">مرحباً بك!</p>
+            </div>
+            <div class="chat-footer p-2 border-top">
+                <form id="chatForm" class="d-flex gap-2" onsubmit="sendChatMessage(event)">
+                    <input type="text" id="chatInput"
+                        class="form-control form-control-sm text-white bg-transparent border-secondary"
+                        placeholder="اكتب..." required>
+                    <button type="submit" class="btn btn-warning btn-sm"><i class="fa fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp & Footer -->
+    <a href="https://wa.me/201000000000" target="_blank" class="floating-whatsapp"><i
+            class="fa-brands fa-whatsapp"></i></a>
+    <footer class="mt-5 pt-5 pb-3 glass-card border-0 rounded-0" style="background: rgba(0,0,0,0.8);">
+        <div class="container text-white">
+            <div class="text-center text-white-50 small">&copy; 2024 جميع الحقوق محفوظة</div>
+        </div>
+    </footer>
+
+    <!-- Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down">
+            <div class="modal-content glass-card border-0 overflow-hidden" style="background: rgba(20, 20, 35, 0.98);">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-warning fw-bold" id="modalTitle">تفاصيل المنتج</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-lg-7 mb-4 mb-lg-0">
+                            <div class="main-image-container mb-3 rounded shadow-lg position-relative"
+                                style="height: 400px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                                <img id="mainModalImg" src="" class="w-100 h-100"
+                                    style="object-fit: contain; background: #fff;">
+                            </div>
+                            <div class="d-flex gap-2 overflow-auto py-2" id="thumbnailsContainer"></div>
+                        </div>
+                        <div class="col-lg-5 text-white">
+                            <small class="text-info bg-dark bg-opacity-50 px-2 py-1 rounded"
+                                id="modalCategory">القسم</small>
+                            <h2 class="fw-bold mt-3 mb-2" id="modalName">اسم المنتج</h2>
+                            <div id="modalStars" class="mb-3 star-rating" style="cursor: pointer; font-size: 1.2rem;">
+                            </div>
+
+                            <h3 class="text-warning mb-2 fw-bold" id="modalPrice">0 EGP</h3>
+
+                            <!-- Stock Status (New) -->
+                            <div class="mb-3">
+                                <span id="stockStatusBadge" class="badge bg-success">متوفر</span>
+                                <small id="stockCountText" class="text-white-50 ms-2"></small>
+                            </div>
+
+                            <p class="text-white-50 lh-lg" id="modalDesc">وصف...</p>
+                            <hr class="border-secondary my-4">
+                            <div class="d-flex gap-3 align-items-center mb-4">
+                                <div class="input-group" style="width: 140px;">
+                                    <button class="btn btn-outline-light" onclick="changeModalQty(-1)">-</button>
+                                    <input type="text" id="modalQty"
+                                        class="form-control text-center bg-transparent text-white border-secondary"
+                                        value="1" readonly>
+                                    <button class="btn btn-outline-light" onclick="changeModalQty(1)">+</button>
+                                </div>
+                                <button class="btn btn-primary flex-grow-1 fw-bold py-2" id="modalAddToCart"><i
+                                        class="fa fa-cart-plus me-2"></i> إضافة</button>
+                            </div>
+                            <!-- Reviews -->
+                            <div class="reviews-section bg-dark bg-opacity-50 p-3 rounded border border-secondary">
+                                <h6 class="text-warning mb-3"><i class="fa-solid fa-comments"></i> آراء العملاء</h6>
+                                <div id="reviewsContainer" class="reviews-list mb-3"
+                                    style="max-height: 150px; overflow-y: auto;"></div>
+                                <form id="reviewForm" onsubmit="submitReview(event)">
+                                    <div class="input-group mb-2"><input type="text" id="reviewAuthor"
+                                            class="form-control form-control-sm bg-dark text-white border-secondary"
+                                            placeholder="اسمك" required></div>
+                                    <div class="input-group"><textarea id="reviewText"
+                                            class="form-control form-control-sm bg-dark text-white border-secondary"
+                                            placeholder="تعليقك..." rows="1" required></textarea><button
+                                            class="btn btn-warning btn-sm fw-bold" type="submit">نشر</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
