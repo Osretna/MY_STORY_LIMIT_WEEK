@@ -1,18 +1,18 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { 
     getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, getDoc, setDoc, 
-    query, where, orderBy, onSnapshot, serverTimestamp 
+    query, where, orderBy, onSnapshot, serverTimestamp, increment // 👈 تمت الإضافة هنا
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import { 
     getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, 
-    onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup 
+    onAuthStateChanged, signOut, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup 
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 
 const firebaseConfig = {
-  // 🔴🔴🔴 ضع كود الـ Config الخاص بك هنا (ApiKey...) 🔴🔴🔴
+  // 🔴🔴🔴 ضع كود الـ Config الخاص بك هنا 🔴🔴🔴
   apiKey: "AIzaSyDJeY0Dv5nQwGaNa4bs4-6zXsOeLBJXUS8",
   authDomain: "my-store-limit-week.firebaseapp.com",
   databaseURL: "https://my-store-limit-week-default-rtdb.firebaseio.com",
@@ -28,10 +28,11 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 export { 
-    app, db, auth, storage, googleProvider,
-    collection, getDocs, addDoc, deleteDoc, doc, updateDoc, getDoc, setDoc, query, where, orderBy, onSnapshot, serverTimestamp,
+    app, db, auth, storage, googleProvider, facebookProvider,
+    collection, getDocs, addDoc, deleteDoc, doc, updateDoc, getDoc, setDoc, query, where, orderBy, onSnapshot, serverTimestamp, increment, // 👈 وتم التصدير هنا
     signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithPopup,
     ref, uploadBytes, getDownloadURL 
 };
