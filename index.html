@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,27 +9,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
     <!-- 🔥 1. شريط الإعلانات العلوي (Announcement Bar) - جديد 🔥 -->
-    <div class="announcement-bar text-center text-white small py-1" style="background: linear-gradient(90deg, #ff416c, #ff4b2b);">
+    <div class="announcement-bar text-center text-white small py-1"
+        style="background: linear-gradient(90deg, #ff416c, #ff4b2b);">
         <span>🎉 خصم خاص 20% لفترة محدودة! استخدم كود: <b>SALE20</b> 🚛 شحن مجاني للطلبات فوق 1000ج</span>
     </div>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm" style="top: 25px;"> <!-- top:25px عشان شريط الاعلانات -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm" style="top: 25px;">
+        <!-- top:25px عشان شريط الاعلانات -->
         <div class="container">
             <a class="navbar-brand fw-bold text-warning" href="#"><i class="fa-solid fa-store"></i> المتجر</a>
             <div class="d-flex align-items-center gap-2">
-                <button id="signupBtn" class="btn btn-outline-light btn-sm" onclick="openAuthModal()"><i class="fa-solid fa-user-plus"></i></button>
-                <div id="userProfileIcon" class="d-none align-items-center" style="cursor: pointer;" onclick="openProfileModal()">
-                    <img id="userAvatar" src="https://via.placeholder.com/35" class="rounded-circle border border-warning" style="width:38px;height:38px; object-fit: cover;">
+                <button id="signupBtn" class="btn btn-outline-light btn-sm" onclick="openAuthModal()"><i
+                        class="fa-solid fa-user-plus"></i></button>
+                <div id="userProfileIcon" class="d-none align-items-center" style="cursor: pointer;"
+                    onclick="openProfileModal()">
+                    <img id="userAvatar" src="https://via.placeholder.com/35"
+                        class="rounded-circle border border-warning" style="width:38px;height:38px; object-fit: cover;">
                 </div>
                 <button class="btn btn-outline-warning position-relative" onclick="showSection('cart')">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle" id="cartCount">0</span>
+                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle"
+                        id="cartCount">0</span>
                 </button>
-                <a href="login.html" id="mainLoginBtn" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-right-to-bracket"></i></a>
+                <a href="login.html" id="mainLoginBtn" class="btn btn-outline-light btn-sm"><i
+                        class="fa-solid fa-right-to-bracket"></i></a>
             </div>
         </div>
     </nav>
@@ -38,14 +47,22 @@
         <!-- Slider -->
         <div id="productCarousel" class="carousel slide mb-4 glass-card p-2" data-bs-ride="carousel">
             <div class="carousel-inner rounded">
-                <div class="carousel-item active"><img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200" alt="Sale"></div>
-                <div class="carousel-item"><img src="https://images.pexels.com/photos/5872364/pexels-photo-5872364.jpeg" alt="Tech"></div>
-                <div class="carousel-item"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200" alt="Shoes"></div>
-                <div class="carousel-item"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200" alt="Headphones"></div>
-                <div class="carousel-item"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200" alt="Shopping"></div>
+                <div class="carousel-item active"><img
+                        src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200" alt="Sale"></div>
+                <div class="carousel-item"><img src="https://images.pexels.com/photos/5872364/pexels-photo-5872364.jpeg"
+                        alt="Tech"></div>
+                <div class="carousel-item"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200"
+                        alt="Shoes"></div>
+                <div class="carousel-item"><img
+                        src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200" alt="Headphones">
+                </div>
+                <div class="carousel-item"><img
+                        src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200" alt="Shopping"></div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
-            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
+                data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
+                data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
         </div>
 
         <!-- Offers -->
@@ -59,7 +76,8 @@
         <div class="mb-4 position-relative z-3">
             <div class="input-group glass-card overflow-hidden">
                 <span class="input-group-text bg-transparent border-0 text-white"><i class="fa fa-search"></i></span>
-                <input type="text" class="form-control bg-transparent text-white border-0" id="smartSearchInput" placeholder="ابحث عن منتج..." autocomplete="off">
+                <input type="text" class="form-control bg-transparent text-white border-0" id="smartSearchInput"
+                    placeholder="ابحث عن منتج..." autocomplete="off">
             </div>
             <div id="searchResults" class="search-dropdown glass-card"></div>
         </div>
@@ -67,14 +85,17 @@
         <!-- Categories -->
         <div class="mb-3">
             <h5 class="mb-2 text-white-50">تصفح الأقسام</h5>
-            <div id="categoriesWrapper" class="scroll-menu"><div class="spinner-border spinner-border-sm text-light"></div></div>
+            <div id="categoriesWrapper" class="scroll-menu">
+                <div class="spinner-border spinner-border-sm text-light"></div>
+            </div>
         </div>
 
         <!-- 🔥 2. شريط الفلترة والترتيب (Filter & Sort Bar) - جديد 🔥 -->
         <div class="glass-card p-2 mb-4 d-flex flex-wrap gap-2 align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
                 <i class="fa-solid fa-filter text-warning"></i>
-                <select class="form-select form-select-sm bg-dark text-white border-secondary" style="width: auto;" id="sortOptions" onchange="applySortAndFilter()">
+                <select class="form-select form-select-sm bg-dark text-white border-secondary" style="width: auto;"
+                    id="sortOptions" onchange="applySortAndFilter()">
                     <option value="default">الترتيب الافتراضي</option>
                     <option value="low">السعر: من الأقل للأعلى</option>
                     <option value="high">السعر: من الأعلى للأقل</option>
@@ -82,9 +103,13 @@
                 </select>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <input type="number" id="minPrice" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="من" style="width: 70px;" oninput="applySortAndFilter()">
+                <input type="number" id="minPrice"
+                    class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="من"
+                    style="width: 70px;" oninput="applySortAndFilter()">
                 <span class="text-white">-</span>
-                <input type="number" id="maxPrice" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="إلى" style="width: 70px;" oninput="applySortAndFilter()">
+                <input type="number" id="maxPrice"
+                    class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="إلى"
+                    style="width: 70px;" oninput="applySortAndFilter()">
             </div>
         </div>
 
@@ -97,25 +122,33 @@
         <div class="glass-card p-4">
             <h2 class="mb-4 text-warning">سلة المشتريات</h2>
             <div class="row">
-                <div class="col-md-7 mb-3"><div class="bg-white text-dark rounded p-3" id="cartItems"></div></div>
+                <div class="col-md-7 mb-3">
+                    <div class="bg-white text-dark rounded p-3" id="cartItems"></div>
+                </div>
                 <div class="col-md-5">
                     <div class="bg-dark bg-opacity-50 p-3 rounded">
                         <h4 class="text-white">بيانات الشحن</h4>
                         <form id="checkoutForm">
                             <input type="text" id="c_name" class="form-control mb-2" placeholder="الاسم" required>
                             <input type="tel" id="c_phone" class="form-control mb-2" placeholder="الهاتف" required>
-                            <select id="c_gov" class="form-select mb-2" required><option value="" disabled selected>المحافظة</option></select>
+                            <select id="c_gov" class="form-select mb-2" required>
+                                <option value="" disabled selected>المحافظة</option>
+                            </select>
                             <input type="text" id="c_address" class="form-control mb-3" placeholder="العنوان" required>
                             <div class="coupon-box mb-3">
                                 <div class="input-group">
-                                    <input type="text" id="userCoupon" class="form-control bg-dark text-white border-secondary" placeholder="كود الخصم">
+                                    <input type="text" id="userCoupon"
+                                        class="form-control bg-dark text-white border-secondary"
+                                        placeholder="كود الخصم">
                                     <button type="button" class="btn btn-warning" onclick="applyCoupon()">تطبيق</button>
                                 </div>
                                 <small id="couponMsg" class="d-block mt-1"></small>
                             </div>
                             <hr class="text-white">
-                            <div class="d-flex justify-content-between text-white mb-3"><span>الإجمالي:</span><span class="fw-bold fs-5" id="totalPrice">0 EGP</span></div>
-                            <button type="submit" class="btn btn-success w-100 py-2 fw-bold"><i class="fa-brands fa-whatsapp"></i> إتمام الطلب</button>
+                            <div class="d-flex justify-content-between text-white mb-3"><span>الإجمالي:</span><span
+                                    class="fw-bold fs-5" id="totalPrice">0 EGP</span></div>
+                            <button type="submit" class="btn btn-success w-100 py-2 fw-bold"><i
+                                    class="fa-brands fa-whatsapp"></i> إتمام الطلب</button>
                         </form>
                     </div>
                 </div>
@@ -127,22 +160,141 @@
     <!-- Modals & Chat & Footer (نفس القديم) -->
     <!-- انسخ باقي الملحقات كما كانت في ملفك السابق (Chat, Footer, AuthModal, ProfileModal, ProductModal) -->
     <!-- اختصاراً للمساحة سأضعهم هنا باختصار، تأكد من وجودهم -->
-    
-    <div class="chat-wrapper"><button class="chat-btn" onclick="toggleChat()"><i class="fa-solid fa-headset fa-lg"></i></button><div class="chat-box glass-card d-none" id="chatBox"><div class="chat-header p-3 border-bottom d-flex justify-content-between bg-dark rounded-top"><span class="fw-bold text-warning">الدعم الفني</span><button class="btn-close btn-close-white btn-sm" onclick="toggleChat()"></button></div><div class="chat-body p-3" id="chatMessages"><p class="text-center text-white-50 small">مرحباً بك!</p></div><div class="chat-footer p-2 border-top"><form id="chatForm" class="d-flex gap-2" onsubmit="sendChatMessage(event)"><input type="text" id="chatInput" class="form-control form-control-sm text-white bg-transparent border-secondary" placeholder="اكتب..." required><button type="submit" class="btn btn-warning btn-sm"><i class="fa fa-paper-plane"></i></button></form></div></div></div>
+
+    <div class="chat-wrapper"><button class="chat-btn" onclick="toggleChat()"><i
+                class="fa-solid fa-headset fa-lg"></i></button>
+        <div class="chat-box glass-card d-none" id="chatBox">
+            <div class="chat-header p-3 border-bottom d-flex justify-content-between bg-dark rounded-top"><span
+                    class="fw-bold text-warning">الدعم الفني</span><button class="btn-close btn-close-white btn-sm"
+                    onclick="toggleChat()"></button></div>
+            <div class="chat-body p-3" id="chatMessages">
+                <p class="text-center text-white-50 small">مرحباً بك!</p>
+            </div>
+            <div class="chat-footer p-2 border-top">
+                <form id="chatForm" class="d-flex gap-2" onsubmit="sendChatMessage(event)"><input type="text"
+                        id="chatInput" class="form-control form-control-sm text-white bg-transparent border-secondary"
+                        placeholder="اكتب..." required><button type="submit" class="btn btn-warning btn-sm"><i
+                            class="fa fa-paper-plane"></i></button></form>
+            </div>
+        </div>
+    </div>
     <a href="#" class="floating-whatsapp" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
-    <footer class="mt-5 pt-5 pb-3 glass-card border-0 rounded-0" style="background: rgba(0,0,0,0.8);"><div class="container text-white"><div class="text-center text-white-50 small">&copy; 2024 جميع الحقوق محفوظة</div></div></footer>
+    <footer class="mt-5 pt-5 pb-3 glass-card border-0 rounded-0" style="background: rgba(0,0,0,0.8);">
+        <div class="container text-white">
+            <div class="text-center text-white-50 small">&copy; 2024 جميع الحقوق محفوظة</div>
+        </div>
+    </footer>
 
     <!-- Auth Modal -->
-    <div class="modal fade" id="authModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content glass-card border-secondary text-center p-4" style="background: rgba(30,30,40,0.95);"><h5 class="text-white mb-4">إنشاء حساب</h5><button class="btn btn-light w-100 mb-3 fw-bold d-flex align-items-center justify-content-center gap-2" onclick="socialLogin('google')"><i class="fa-brands fa-google text-danger"></i> Google</button><button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center gap-2" style="background: #1877f2; border:none;" onclick="socialLogin('facebook')"><i class="fa-brands fa-facebook text-white"></i> Facebook</button></div></div></div>
+    <div class="modal fade" id="authModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content glass-card border-secondary text-center p-4"
+                style="background: rgba(30,30,40,0.95);">
+                <h5 class="text-white mb-4">إنشاء حساب</h5><button
+                    class="btn btn-light w-100 mb-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+                    onclick="socialLogin('google')"><i class="fa-brands fa-google text-danger"></i>
+                    Google</button><button
+                    class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center gap-2"
+                    style="background: #1877f2; border:none;" onclick="socialLogin('facebook')"><i
+                        class="fa-brands fa-facebook text-white"></i> Facebook</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Profile Modal -->
-    <div class="modal fade" id="profileModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content glass-card border-secondary text-center p-4" style="background: rgba(30,30,40,0.95);"><div class="mb-3"><img id="profileImage" src="" class="rounded-circle border border-warning" style="width: 80px; height: 80px;"></div><h4 id="profileName" class="text-warning fw-bold"></h4><p id="profileEmail" class="text-white-50 small"></p><span id="profileRole" class="badge bg-secondary mb-4"></span><hr class="border-secondary"><div class="text-start mb-3"><h6 class="text-warning mb-2"><i class="fa-solid fa-clock-rotate-left"></i> طلباتي</h6><div id="userOrdersHistory" class="bg-dark bg-opacity-50 p-2 rounded border border-secondary" style="max-height: 150px; overflow-y: auto;"></div></div><div class="d-grid gap-2"><button class="btn btn-outline-light" onclick="showSection('cart'); bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();"><i class="fa-solid fa-cart-shopping"></i> سلة المشتريات</button><a href="admin.html" id="adminPanelBtn" class="btn btn-outline-warning d-none"><i class="fa-solid fa-gauge"></i> لوحة التحكم</a><button class="btn btn-danger" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</button></div></div></div></div>
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card border-secondary text-center p-4"
+                style="background: rgba(30,30,40,0.95);">
+                <div class="mb-3"><img id="profileImage" src="" class="rounded-circle border border-warning"
+                        style="width: 80px; height: 80px;"></div>
+                <h4 id="profileName" class="text-warning fw-bold"></h4>
+                <p id="profileEmail" class="text-white-50 small"></p><span id="profileRole"
+                    class="badge bg-secondary mb-4"></span>
+                <hr class="border-secondary">
+                <div class="text-start mb-3">
+                    <h6 class="text-warning mb-2"><i class="fa-solid fa-clock-rotate-left"></i> طلباتي</h6>
+                    <div id="userOrdersHistory" class="bg-dark bg-opacity-50 p-2 rounded border border-secondary"
+                        style="max-height: 150px; overflow-y: auto;"></div>
+                </div>
+                <div class="d-grid gap-2"><button class="btn btn-outline-light"
+                        onclick="showSection('cart'); bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();"><i
+                            class="fa-solid fa-cart-shopping"></i> سلة المشتريات</button><a href="admin.html"
+                        id="adminPanelBtn" class="btn btn-outline-warning d-none"><i class="fa-solid fa-gauge"></i> لوحة
+                        التحكم</a><button class="btn btn-danger" onclick="logoutUser()"><i
+                            class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</button></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Product Modal -->
-    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down"><div class="modal-content glass-card border-0 overflow-hidden" style="background: rgba(20, 20, 35, 0.98);"><div class="modal-header border-bottom border-secondary"><h5 class="modal-title text-warning fw-bold" id="modalTitle">تفاصيل المنتج</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body p-4"><div class="row"><div class="col-lg-7 mb-4 mb-lg-0 position-relative"><button class="btn btn-dark btn-sm position-absolute top-0 start-0 m-3 z-3 rounded-circle" style="width:35px; height:35px; background: rgba(0,0,0,0.6);" onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-white"></i></button><div class="main-image-container mb-3 rounded shadow-lg position-relative overflow-hidden" style="height: 400px; border: 1px solid rgba(255,255,255,0.1);"><img id="mainModalImg" src="" class="w-100 h-100 zoom-effect" style="object-fit: contain; background: #fff;"></div><div class="d-flex gap-2 overflow-auto py-2" id="thumbnailsContainer"></div></div><div class="col-lg-5 text-white"><small class="text-info bg-dark bg-opacity-50 px-2 py-1 rounded" id="modalCategory">القسم</small><h2 class="fw-bold mt-3 mb-2" id="modalName">اسم المنتج</h2><div id="modalStars" class="mb-3 star-rating" style="cursor: pointer; font-size: 1.2rem;"></div><h3 class="text-warning mb-2 fw-bold" id="modalPrice">0 EGP</h3><div class="mb-3"><span id="stockStatusBadge" class="badge bg-success">متوفر</span><small id="stockCountText" class="text-white-50 ms-2"></small></div><p class="text-white-50 lh-lg" id="modalDesc">وصف...</p><hr class="border-secondary my-4"><div class="d-flex gap-3 align-items-center mb-4"><div class="input-group" style="width: 140px;"><button class="btn btn-outline-light" onclick="changeModalQty(-1)">-</button><input type="text" id="modalQty" class="form-control text-center bg-transparent text-white border-secondary" value="1" readonly><button class="btn btn-outline-light" onclick="changeModalQty(1)">+</button></div><button class="btn btn-primary flex-grow-1 fw-bold py-2" id="modalAddToCart"><i class="fa fa-cart-plus me-2"></i> إضافة</button></div><div class="reviews-section bg-dark bg-opacity-50 p-3 rounded border border-secondary"><h6 class="text-warning mb-3"><i class="fa-solid fa-comments"></i> آراء العملاء</h6><div id="reviewsContainer" class="reviews-list mb-3" style="max-height: 150px; overflow-y: auto;"></div><form id="reviewForm" onsubmit="submitReview(event)"><div class="input-group mb-2"><input type="text" id="reviewAuthor" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="اسمك" required></div><div class="input-group"><textarea id="reviewText" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="تعليقك..." rows="1" required></textarea><button class="btn btn-warning btn-sm fw-bold" type="submit">نشر</button></div></form></div><hr class="border-secondary my-4"><h6 class="text-warning mb-3 small fw-bold">منتجات قد تعجبك</h6><div id="relatedProductsContainer" class="d-flex gap-2 overflow-auto pb-2" style="white-space: nowrap;"></div></div></div></div></div></div></div>
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down">
+            <div class="modal-content glass-card border-0 overflow-hidden" style="background: rgba(20, 20, 35, 0.98);">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-warning fw-bold" id="modalTitle">تفاصيل المنتج</h5><button type="button"
+                        class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-lg-7 mb-4 mb-lg-0 position-relative"><button
+                                class="btn btn-dark btn-sm position-absolute top-0 start-0 m-3 z-3 rounded-circle"
+                                style="width:35px; height:35px; background: rgba(0,0,0,0.6);"
+                                onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-white"></i></button>
+                            <div class="main-image-container mb-3 rounded shadow-lg position-relative overflow-hidden"
+                                style="height: 400px; border: 1px solid rgba(255,255,255,0.1);"><img id="mainModalImg"
+                                    src="" class="w-100 h-100 zoom-effect"
+                                    style="object-fit: contain; background: #fff;"></div>
+                            <div class="d-flex gap-2 overflow-auto py-2" id="thumbnailsContainer"></div>
+                        </div>
+                        <div class="col-lg-5 text-white"><small
+                                class="text-info bg-dark bg-opacity-50 px-2 py-1 rounded"
+                                id="modalCategory">القسم</small>
+                            <h2 class="fw-bold mt-3 mb-2" id="modalName">اسم المنتج</h2>
+                            <div id="modalStars" class="mb-3 star-rating" style="cursor: pointer; font-size: 1.2rem;">
+                            </div>
+                            <h3 class="text-warning mb-2 fw-bold" id="modalPrice">0 EGP</h3>
+                            <div class="mb-3"><span id="stockStatusBadge" class="badge bg-success">متوفر</span><small
+                                    id="stockCountText" class="text-white-50 ms-2"></small></div>
+                            <p class="text-white-50 lh-lg" id="modalDesc">وصف...</p>
+                            <hr class="border-secondary my-4">
+                            <div class="d-flex gap-3 align-items-center mb-4">
+                                <div class="input-group" style="width: 140px;"><button class="btn btn-outline-light"
+                                        onclick="changeModalQty(-1)">-</button><input type="text" id="modalQty"
+                                        class="form-control text-center bg-transparent text-white border-secondary"
+                                        value="1" readonly><button class="btn btn-outline-light"
+                                        onclick="changeModalQty(1)">+</button></div><button
+                                    class="btn btn-primary flex-grow-1 fw-bold py-2" id="modalAddToCart"><i
+                                        class="fa fa-cart-plus me-2"></i> إضافة</button>
+                            </div>
+                            <div class="reviews-section bg-dark bg-opacity-50 p-3 rounded border border-secondary">
+                                <h6 class="text-warning mb-3"><i class="fa-solid fa-comments"></i> آراء العملاء</h6>
+                                <div id="reviewsContainer" class="reviews-list mb-3"
+                                    style="max-height: 150px; overflow-y: auto;"></div>
+                                <form id="reviewForm" onsubmit="submitReview(event)">
+                                    <div class="input-group mb-2"><input type="text" id="reviewAuthor"
+                                            class="form-control form-control-sm bg-dark text-white border-secondary"
+                                            placeholder="اسمك" required></div>
+                                    <div class="input-group"><textarea id="reviewText"
+                                            class="form-control form-control-sm bg-dark text-white border-secondary"
+                                            placeholder="تعليقك..." rows="1" required></textarea><button
+                                            class="btn btn-warning btn-sm fw-bold" type="submit">نشر</button></div>
+                                </form>
+                            </div>
+                            <hr class="border-secondary my-4">
+                            <h6 class="text-warning mb-3 small fw-bold">منتجات قد تعجبك</h6>
+                            <div id="relatedProductsContainer" class="d-flex gap-2 overflow-auto pb-2"
+                                style="white-space: nowrap;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
