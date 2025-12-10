@@ -243,6 +243,7 @@ window.socialLogin = async (providerName) => {
     }
 };
 
+// 3. مراقبة الحالة وتغيير الأزرار (تعديل صورة الأدمن)
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     const signupBtn = document.getElementById('signupBtn');
@@ -251,29 +252,45 @@ onAuthStateChanged(auth, async (user) => {
     const adminPanelBtn = document.getElementById('adminPanelBtn');
 
     if (user) {
+        // إخفاء أزرار الدخول
         if(signupBtn) signupBtn.classList.add('d-none');
         if(mainLoginBtn) mainLoginBtn.classList.add('d-none');
         
+        // إظهار أيقونة البروفايل
         if(userIcon) {
             userIcon.classList.remove('d-none');
             userIcon.classList.add('d-flex');
-            document.getElementById('userAvatar').src = user.photoURL || 'https://via.placeholder.com/35';
+            
+            // الصورة الافتراضية (جوجل أو رمادي)
+            let avatarSrc = user.photoURL || 'https://via.placeholder.com/35';
+            document.getElementById('userAvatar').src = avatarSrc;
         }
 
+        // فحص الصلاحية والدور
         try {
             const docSnap = await getDoc(doc(db, "users", user.uid));
             const role = docSnap.exists() ? docSnap.data().role : 'customer';
             
+            // 🔥🔥 التعديل الجديد: صورة خاصة للأدمن 🔥🔥
+            if (role === 'admin') {
+                // صورة أيقونة "مدير" فخمة
+                document.getElementById('userAvatar').src = "https://images.pexels.com/photos/5816291/pexels-photo-5816291.jpeg";
+                // أو استخدم هذا الرابط لو تحب شكل تاني: "https://images.pexels.com/photos/5816291/pexels-photo-5816291.jpeg
+            }
+
+            // إظهار زر لوحة التحكم للموظفين
             if((role === 'admin' || role === 'support' || role === 'sales') && adminPanelBtn) {
                 adminPanelBtn.classList.remove('d-none');
             }
         } catch(e) { console.log(e); }
 
+        // ملء الاسم في السلة
         const nameInput = document.getElementById('c_name'); 
         if(nameInput && !nameInput.value) nameInput.value = user.displayName;
         
         listenToChat(user.uid);
     } else {
+        // حالة الزائر
         if(signupBtn) signupBtn.classList.remove('d-none');
         if(mainLoginBtn) mainLoginBtn.classList.remove('d-none');
         if(userIcon) {
