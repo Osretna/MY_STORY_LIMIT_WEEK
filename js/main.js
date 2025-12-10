@@ -58,7 +58,7 @@ let currentUser = null;
 const governorates = ["القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "الشرقية", "المنوفية", "القليوبية", "البحيرة", "الغربية", "بور سعيد", "دمياط", "الإسماعيلية", "السويس", "كفر الشيخ", "الفيوم", "بني سويف", "المنيا", "أسيوط", "سوهاج", "قنا", "الأقصر", "أسوان", "البحر الأحمر", "الوادي الجديد", "مطروح", "شمال سيناء", "جنوب سيناء"];
 
 // ============================================
-// 2. التحميل والبدء (المنطق الذكي الجديد)
+// 2. التحميل والبدء
 // ============================================
 document.addEventListener('DOMContentLoaded', async () => {
     const govSelect = document.getElementById('c_gov');
@@ -70,49 +70,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     updateCartUI();
+    await fetchProducts();
     updateContactWhatsapp();
     
-    // 1. جلب المنتجات أولاً (ضروري قبل فتح أي منتج)
-    await fetchProducts();
-
-    // 2. فحص الرابط (هل المستخدم كان فاتح صفحة معينة أو منتج معين؟)
+    // Hash Navigation
     const urlParams = new URLSearchParams(window.location.search);
     const sectionParam = urlParams.get('section');
     const productParam = urlParams.get('product');
 
-    // استعادة القسم
-    if (sectionParam) {
-        showSection(sectionParam, false);
-    } else {
-        showSection('home', false);
+    if (sectionParam) showSection(sectionParam, false);
+    else showSection('home', false);
+
+    if (productParam) {
+        setTimeout(() => openProductDetails(productParam, false), 500);
     }
 
-    // استعادة المنتج (لو كان فاتح منتج قبل الرفريش)
-    if (productParam) {
-        // تأخير بسيط لضمان أن المودال جاهز
-        setTimeout(() => {
-            openProductDetails(productParam, false); // false تعني لا تحدث الرابط مرة أخرى
-        }, 500);
-    }
+    // 🔥 تشغيل عداد العروض كل ثانية
+    setInterval(updateTimers, 1000);
 });
 
-// التنقل بين الأقسام (مع تحديث الرابط)
 window.showSection = (id, updateUrl = true) => {
     document.querySelectorAll('.page-section').forEach(s => s.classList.add('d-none'));
     const section = document.getElementById(id);
     if(section) section.classList.remove('d-none');
     window.scrollTo(0,0);
 
-    // تحديث الرابط في المتصفح بدون ريفريش
     if(updateUrl) {
         const url = new URL(window.location);
         url.searchParams.set('section', id);
-        url.searchParams.delete('product'); // لو فتحنا قسم نقفل المنتج من الرابط
+        url.searchParams.delete('product');
         window.history.pushState({}, '', url);
     }
 }
 
-// تحديث الواتساب العائم
 async function updateContactWhatsapp() {
     const floatingBtn = document.querySelector('.floating-whatsapp');
     if(!floatingBtn) return;
@@ -127,7 +117,7 @@ async function updateContactWhatsapp() {
 }
 
 // ============================================
-// 3. جلب المنتجات
+// 📦 3. المنتجات (تم إصلاح العداد هنا)
 // ============================================
 async function fetchProducts() {
     const grid = document.getElementById('productsGrid');
@@ -136,12 +126,7 @@ async function fetchProducts() {
 
     if(grid) {
         grid.innerHTML = Array(10).fill(0).map(() => `
-            <div class="col">
-                <div class="product-card h-100 p-2" style="background: rgba(255,255,255,0.05);">
-                    <div class="skeleton w-100" style="height: 180px; margin-bottom: 10px;"></div>
-                    <div class="skeleton w-75" style="height: 20px;"></div>
-                </div>
-            </div>`).join('');
+            <div class="col"><div class="product-card h-100 p-2" style="background: rgba(255,255,255,0.05);"><div class="skeleton w-100" style="height: 180px; margin-bottom: 10px;"></div><div class="skeleton w-75" style="height: 20px;"></div></div></div>`).join('');
     }
 
     try {
@@ -182,6 +167,13 @@ function generateProductHTML(products) {
     
     return products.map(p => {
         const isFav = wishlist.includes(p.id) ? 'active' : '';
+        
+        // 🔥🔥 إصلاح العداد (يظهر فقط لو فيه تاريخ، وتحت الاسم) 🔥🔥
+        let timerHTML = '';
+        if(p.saleEndTime && p.saleEndTime !== "") {
+            timerHTML = `<div class="flash-timer mt-1 mb-1" data-endtime="${p.saleEndTime}" style="font-size: 0.75rem;">⏳ <span class="timer-display">جاري الحساب...</span></div>`;
+        }
+
         return `
         <div class="col">
             <div class="product-card h-100 d-flex flex-column shadow-sm position-relative">
@@ -194,14 +186,21 @@ function generateProductHTML(products) {
                 </div>
                 <div class="card-body p-2 d-flex flex-column text-dark">
                     <h6 class="card-title fw-bold text-truncate" onclick="openProductDetails('${p.id}')" style="cursor:pointer">${p.name}</h6>
+                    
+                    <!-- مكان العداد الجديد: تحت الاسم -->
+                    ${timerHTML}
+
                     <div class="star-rating small mb-1">
                         ${getStarHTML(p.ratingAvg)} <span class="text-muted" style="font-size:0.7rem">(${p.ratingCount})</span>
                     </div>
+
                     <small class="text-muted mb-2 fw-bold text-primary">${p.price} EGP</small>
-                    <div class="mt-auto">
-                        <button class="btn btn-primary btn-sm w-100 fw-bold d-flex align-items-center justify-content-center gap-1" onclick="addToCart('${p.id}')">
-                            <i class="fa fa-cart-plus"></i> <span>إضافة</span>
+                    
+                    <div class="mt-auto d-flex gap-1">
+                        <button class="btn btn-primary btn-sm flex-grow-1 fw-bold" onclick="addToCart('${p.id}')">
+                            <i class="fa fa-cart-plus"></i>
                         </button>
+                        <button class="btn btn-buy-now btn-sm px-3" onclick="buyNow('${p.id}')">شراء</button>
                     </div>
                 </div>
             </div>
@@ -209,118 +208,51 @@ function generateProductHTML(products) {
     }).join('');
 }
 
-window.renderProducts = (p) => { const grid = document.getElementById('productsGrid'); if(grid) grid.innerHTML = generateProductHTML(p); };
-
-// ============================================
-// 🔐 4. تسجيل الدخول
-// ============================================
-window.openAuthModal = () => {
-    const modalEl = document.getElementById('authModal');
-    if(modalEl) new bootstrap.Modal(modalEl).show();
+window.renderProducts = (p) => { 
+    const grid = document.getElementById('productsGrid'); 
+    if(grid) grid.innerHTML = generateProductHTML(p); 
+    // تحديث العدادات فوراً بعد الرسم
+    updateTimers();
 };
 
-window.socialLogin = async (providerName) => {
-    const provider = providerName === 'google' ? googleProvider : facebookProvider;
-    try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
+// 🔥🔥 دالة تحديث العداد (Logic Fix) 🔥🔥
+function updateTimers() {
+    document.querySelectorAll('.flash-timer').forEach(el => {
+        const endTimeStr = el.dataset.endtime;
+        if (!endTimeStr) return; // لو مفيش تاريخ نخرج
+
+        const end = new Date(endTimeStr).getTime();
+        const now = new Date().getTime();
         
-        await setDoc(doc(db, "users", user.uid), {
-            name: user.displayName,
-            email: user.email,
-            photo: user.photoURL,
-            role: "customer"
-        }, { merge: true });
+        if (isNaN(end)) return; // لو التاريخ بايظ نخرج
 
-        const modalEl = document.getElementById('authModal');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if(modal) modal.hide();
+        const dist = end - now;
 
-        toast(`مرحباً ${user.displayName}`, 'success');
-    } catch (error) {
-        console.error(error);
-        toast('فشل الدخول', 'error');
-    }
-};
-
-// 3. مراقبة الحالة وتغيير الأزرار (تعديل صورة الأدمن)
-onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
-    const signupBtn = document.getElementById('signupBtn');
-    const userIcon = document.getElementById('userProfileIcon');
-    const mainLoginBtn = document.getElementById('mainLoginBtn');
-    const adminPanelBtn = document.getElementById('adminPanelBtn');
-
-    if (user) {
-        // إخفاء أزرار الدخول
-        if(signupBtn) signupBtn.classList.add('d-none');
-        if(mainLoginBtn) mainLoginBtn.classList.add('d-none');
-        
-        // إظهار أيقونة البروفايل
-        if(userIcon) {
-            userIcon.classList.remove('d-none');
-            userIcon.classList.add('d-flex');
-            
-            // الصورة الافتراضية (جوجل أو رمادي)
-            let avatarSrc = user.photoURL || 'https://via.placeholder.com/35';
-            document.getElementById('userAvatar').src = avatarSrc;
+        if(dist < 0) {
+            el.innerHTML = "انتهى العرض"; 
+            el.style.background = "#555";
+        } else {
+            const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((dist % (1000 * 60)) / 1000);
+            el.querySelector('.timer-display').innerText = `${h}س ${m}د ${s}ث`;
         }
+    });
+}
 
-        // فحص الصلاحية والدور
-        try {
-            const docSnap = await getDoc(doc(db, "users", user.uid));
-            const role = docSnap.exists() ? docSnap.data().role : 'customer';
-            
-            // 🔥🔥 التعديل الجديد: صورة خاصة للأدمن 🔥🔥
-            if (role === 'admin') {
-                // صورة أيقونة "مدير" فخمة
-                document.getElementById('userAvatar').src = "https://images.pexels.com/photos/5816291/pexels-photo-5816291.jpeg";
-                // أو استخدم هذا الرابط لو تحب شكل تاني: "https://images.pexels.com/photos/5816291/pexels-photo-5816291.jpeg
-            }
-
-            // إظهار زر لوحة التحكم للموظفين
-            if((role === 'admin' || role === 'support' || role === 'sales') && adminPanelBtn) {
-                adminPanelBtn.classList.remove('d-none');
-            }
-        } catch(e) { console.log(e); }
-
-        // ملء الاسم في السلة
-        const nameInput = document.getElementById('c_name'); 
-        if(nameInput && !nameInput.value) nameInput.value = user.displayName;
-        
-        listenToChat(user.uid);
-    } else {
-        // حالة الزائر
-        if(signupBtn) signupBtn.classList.remove('d-none');
-        if(mainLoginBtn) mainLoginBtn.classList.remove('d-none');
-        if(userIcon) {
-            userIcon.classList.add('d-none');
-            userIcon.classList.remove('d-flex');
-        }
-    }
-});
-
-window.openProfileModal = () => {
-    if(!currentUser) return;
-    document.getElementById('profileImage').src = currentUser.photoURL || 'https://via.placeholder.com/80';
-    document.getElementById('profileName').innerText = currentUser.displayName;
-    document.getElementById('profileEmail').innerText = currentUser.email;
-    if(typeof loadUserOrders === 'function') loadUserOrders();
-    new bootstrap.Modal(document.getElementById('profileModal')).show();
-};
-
-window.logoutUser = () => {
-    signOut(auth).then(() => window.location.reload());
+// زر الشراء الفوري
+window.buyNow = (id) => {
+    addToCart(id); 
+    showSection('cart'); 
 };
 
 // ============================================
-// 📸 5. تفاصيل المنتج (مع تحديث الرابط)
+// 📸 4. تفاصيل المنتج (تم إضافة العداد للمودال)
 // ============================================
 window.openProductDetails = (id, updateUrl = true) => {
     const p = allProducts.find(x => x.id === id); if(!p) return;
     currentProductId = id; 
 
-    // تحديث الرابط لـ index.html?product=ID
     if(updateUrl) {
         const url = new URL(window.location);
         url.searchParams.set('product', id);
@@ -329,7 +261,14 @@ window.openProductDetails = (id, updateUrl = true) => {
 
     let imgs = p.images || [p.imageUrl];
     document.getElementById('modalTitle').innerText = p.name;
-    document.getElementById('modalName').innerText = p.name;
+    
+    // إضافة العداد في المودال أيضاً
+    let nameHTML = p.name;
+    if(p.saleEndTime && p.saleEndTime !== "") {
+        nameHTML += `<br><span class="flash-timer mt-2" data-endtime="${p.saleEndTime}">⏳ <span class="timer-display">...</span></span>`;
+    }
+    document.getElementById('modalName').innerHTML = nameHTML;
+
     document.getElementById('modalPrice').innerText = p.price + ' EGP';
     document.getElementById('modalCategory').innerText = p.category;
     
@@ -365,12 +304,10 @@ window.openProductDetails = (id, updateUrl = true) => {
         const q = parseInt(qtyInput.value);
         if(stock > 0 && q > stock) return toast('الكمية غير متاحة', 'warning');
         addToCart(p.id, q); 
-        // نغلق المودال ونرجع الرابط للرئيسية
         const modalEl = document.getElementById('productModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         modal.hide();
         
-        // إزالة بارامتر المنتج من الرابط عند الإغلاق
         const url = new URL(window.location);
         url.searchParams.delete('product');
         window.history.pushState({}, '', url);
@@ -380,7 +317,9 @@ window.openProductDetails = (id, updateUrl = true) => {
     loadReviews(id); 
     if(document.getElementById('reviewForm')) document.getElementById('reviewForm').reset();
     
-    // عند إغلاق المودال يدوياً (من الـ X أو الضغط خارجه)، يجب حذف الرابط
+    // تشغيل العداد فوراً داخل المودال
+    updateTimers();
+
     const modalElement = document.getElementById('productModal');
     const myModal = new bootstrap.Modal(modalElement);
     myModal.show();
@@ -389,7 +328,101 @@ window.openProductDetails = (id, updateUrl = true) => {
         const url = new URL(window.location);
         url.searchParams.delete('product');
         window.history.pushState({}, '', url);
-    }, { once: true }); // once: true عشان ميكررش الحدث
+    }, { once: true });
+};
+
+// ============================================
+// 🔐 5. تسجيل الدخول
+// ============================================
+window.openAuthModal = () => {
+    const modalEl = document.getElementById('authModal');
+    if(modalEl) new bootstrap.Modal(modalEl).show();
+};
+
+window.socialLogin = async (providerName) => {
+    const provider = providerName === 'google' ? googleProvider : facebookProvider;
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        await setDoc(doc(db, "users", user.uid), {
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+            role: "customer"
+        }, { merge: true });
+
+        const modalEl = document.getElementById('authModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if(modal) modal.hide();
+
+        toast(`مرحباً ${user.displayName}`, 'success');
+    } catch (error) {
+        console.error(error);
+        if(error.code === 'auth/account-exists-with-different-credential') {
+            Swal.fire('تنبيه', 'هذا البريد مسجل مسبقاً بطريقة أخرى', 'warning');
+        } else {
+            toast('فشل الدخول', 'error');
+        }
+    }
+};
+
+onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    const signupBtn = document.getElementById('signupBtn');
+    const userIcon = document.getElementById('userProfileIcon');
+    const mainLoginBtn = document.getElementById('mainLoginBtn');
+    const adminPanelBtn = document.getElementById('adminPanelBtn');
+
+    if (user) {
+        if(signupBtn) signupBtn.classList.add('d-none');
+        if(mainLoginBtn) mainLoginBtn.classList.add('d-none');
+        
+        if(userIcon) {
+            userIcon.classList.remove('d-none');
+            userIcon.classList.add('d-flex');
+            document.getElementById('userAvatar').src = user.photoURL || 'https://via.placeholder.com/35';
+        }
+
+        try {
+            const docSnap = await getDoc(doc(db, "users", user.uid));
+            const role = docSnap.exists() ? docSnap.data().role : 'customer';
+            
+            // صورة الأدمن المميزة
+            if(role === 'admin') {
+                document.getElementById('userAvatar').src = "https://cdn-icons-png.flaticon.com/512/2206/2206368.png";
+            }
+
+            if((role === 'admin' || role === 'support' || role === 'sales') && adminPanelBtn) {
+                adminPanelBtn.classList.remove('d-none');
+            }
+        } catch(e) { console.log(e); }
+
+        const nameInput = document.getElementById('c_name'); 
+        if(nameInput && !nameInput.value) nameInput.value = user.displayName;
+        
+        listenToChat(user.uid);
+    } else {
+        if(signupBtn) signupBtn.classList.remove('d-none');
+        if(mainLoginBtn) mainLoginBtn.classList.remove('d-none');
+        if(userIcon) {
+            userIcon.classList.add('d-none');
+            userIcon.classList.remove('d-flex');
+        }
+    }
+});
+
+window.openProfileModal = () => {
+    if(!currentUser) return;
+    document.getElementById('profileImage').src = document.getElementById('userAvatar').src;
+    document.getElementById('profileName').innerText = currentUser.displayName;
+    document.getElementById('profileEmail').innerText = currentUser.email;
+    if(typeof loadUserOrders === 'function') loadUserOrders();
+    new bootstrap.Modal(document.getElementById('profileModal')).show();
+};
+
+window.logoutUser = () => {
+    signOut(auth).then(() => window.location.reload());
 };
 
 // ============================================
@@ -398,11 +431,17 @@ window.openProductDetails = (id, updateUrl = true) => {
 window.applyCoupon = async () => {
     const codeInput = document.getElementById('userCoupon');
     const msg = document.getElementById('couponMsg');
+    
     if(!codeInput) return; 
+    
     const code = codeInput.value.toUpperCase().trim();
-    if(!code) { msg.innerText = "يرجى إدخال الكود"; msg.className = "d-block mt-1 text-warning"; return; }
+    if(!code) {
+        msg.innerText = "يرجى إدخال الكود"; msg.className = "d-block mt-1 text-warning"; return;
+    }
+
     const btn = document.querySelector('button[onclick="applyCoupon()"]');
     if(btn) { btn.disabled = true; btn.innerText = "..."; }
+
     try {
         const docSnap = await getDoc(doc(db, "coupons", code));
         if(docSnap.exists() && docSnap.data().active) {
@@ -415,8 +454,12 @@ window.applyCoupon = async () => {
             msg.innerText = "❌ الكود غير صحيح"; msg.className = "d-block mt-1 text-danger";
             updateCartUI();
         }
-    } catch(err) { console.error("Coupon Error:", err); msg.innerText = "خطأ في الاتصال"; msg.className = "d-block mt-1 text-warning"; } 
-    finally { if(btn) { btn.disabled = false; btn.innerText = "تطبيق"; } }
+    } catch(err) { 
+        console.error("Coupon Error:", err); 
+        msg.innerText = "خطأ في الاتصال"; msg.className = "d-block mt-1 text-warning";
+    } finally { 
+        if(btn) { btn.disabled = false; btn.innerText = "تطبيق"; }
+    }
 };
 
 // ============================================
@@ -426,6 +469,7 @@ window.addToCart = (id, qtyOverride = null) => {
     let qty = qtyOverride ? qtyOverride : 1;
     const p = allProducts.find(p => p.id === id); if (!p) return;
     if(p.stockQty && qty > p.stockQty) return toast('الكمية غير متوفرة', 'warning');
+    
     const exist = cart.find(i => i.id === id);
     if (exist) {
         if(p.stockQty && (exist.qty + qty) > p.stockQty) return toast('وصلت للحد الأقصى', 'warning');
@@ -442,8 +486,18 @@ function updateCartUI() {
     if(!container) return;
     document.getElementById('cartCount').innerText = cart.length;
     let total = calculateOriginalTotal();
-    if(cart.length === 0) { container.innerHTML = '<p class="text-center text-muted">فارغة</p>'; document.getElementById('totalPrice').innerText = '0'; return; }
-    container.innerHTML = cart.map((item, i) => `<div class="d-flex justify-content-between align-items-center border-bottom py-2"><div><strong>${item.name}</strong><br><small>${item.price} x ${item.qty}</small></div><button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${i})">&times;</button></div>`).join('');
+    
+    if(cart.length === 0) {
+        container.innerHTML = '<p class="text-center text-muted">فارغة</p>';
+        document.getElementById('totalPrice').innerText = '0';
+        return;
+    }
+    container.innerHTML = cart.map((item, i) => `
+        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+            <div><strong>${item.name}</strong><br><small>${item.price} x ${item.qty}</small></div>
+            <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${i})">&times;</button>
+        </div>`).join('');
+    
     if(appliedDiscount > 0) {
         const finalPrice = total - (total * appliedDiscount / 100);
         document.getElementById('totalPrice').innerHTML = `<span class="text-decoration-line-through text-muted small">${total}</span> <span class="text-warning fw-bold">${finalPrice} EGP</span><div class="badge bg-success small ms-1">كوبون ${appliedCouponCode}</div>`;
@@ -454,8 +508,10 @@ window.removeFromCart = (i) => { cart.splice(i, 1); saveCart(); };
 document.getElementById('checkoutForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if(cart.length === 0) return toast('السلة فارغة', 'warning');
+    
     const submitBtn = checkoutForm.querySelector('button[type="submit"]');
     const oldText = submitBtn.innerText; submitBtn.innerText = "جاري التنفيذ..."; submitBtn.disabled = true;
+
     try {
         const updatePromises = cart.map(item => {
             const productRef = doc(db, "products", item.id);
@@ -469,6 +525,7 @@ document.getElementById('checkoutForm')?.addEventListener('submit', async (e) =>
 
         let whatsappPhone = "201000000000"; 
         try { const s = await getDoc(doc(db, "settings", "general")); if(s.exists() && s.data().whatsapp) whatsappPhone = s.data().whatsapp; } catch(e) {}
+        
         let cleanPhone = whatsappPhone.toString().replace(/[^0-9]/g, '');
         if(cleanPhone.startsWith('01') && cleanPhone.length === 11) cleanPhone = '2' + cleanPhone;
 
@@ -491,9 +548,15 @@ document.getElementById('checkoutForm')?.addEventListener('submit', async (e) =>
         msg += `💵 الصافي: ${finalTotal} EGP\n`;
 
         window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+        
         cart = []; appliedDiscount = 0; appliedCouponCode = ""; localStorage.removeItem('cart'); updateCartUI(); showSection('home');
         await fetchProducts();
-    } catch(err) { console.error(err); Swal.fire('خطأ', 'مشكلة في الطلب', 'error'); } finally { submitBtn.innerText = oldText; submitBtn.disabled = false; }
+
+    } catch(err) { 
+        console.error(err); Swal.fire('خطأ', 'مشكلة في الطلب', 'error'); 
+    } finally { 
+        submitBtn.innerText = oldText; submitBtn.disabled = false; 
+    }
 });
 
 // ============================================
@@ -536,7 +599,14 @@ window.toggleWishlist = (id, btn) => { event.stopPropagation(); if (wishlist.inc
 window.changeMainImage = (s) => document.getElementById('mainModalImg').src = s;
 window.changeModalQty = (c) => { let i=document.getElementById('modalQty'); let v=parseInt(i.value)+c; if(v>=1) i.value=v; };
 function toast(t, i) { Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 1500}).fire({icon: i, title: t}); }
-window.filterCat = (cat, btn) => { document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderProducts(cat === 'all' ? allProducts : allProducts.filter(p => p.category === cat)); };
+window.filterCat = (cat, btn) => {
+    // تغيير الزر النشط فقط
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // استدعاء دالة الفرز الشاملة لتطبق كل الشروط مع بعض
+    applySortAndFilter();
+};
 function buildCategoriesMenu() { const w = document.getElementById('categoriesWrapper'); if(!w) return; const cats = new Set(allProducts.map(p => p.category)); let h = `<div class="cat-btn active" onclick="filterCat('all', this)">الكل</div>`; cats.forEach(cat => { if(!cat.includes('عروض')) h += `<div class="cat-btn" onclick="filterCat('${cat}', this)">${cat}</div>`; }); w.innerHTML = h; }
 function getStarHTML(r) { let s=''; for(let i=1;i<=5;i++) s+=`<i class="fa-star ${i<=r?'fa-solid':'fa-regular'} text-warning"></i>`; return s; }
 window.submitRating = async (id, rating) => { const p = allProducts.find(x => x.id === id); if(!p) return; const newCount = (p.ratingCount||0) + 1; const newAvg = (((p.ratingAvg||5)*(p.ratingCount||0)) + rating) / newCount; await updateDoc(doc(db, "products", id), { ratingAvg: newAvg, ratingCount: newCount }); p.ratingAvg = newAvg; p.ratingCount = newCount; openProductDetails(id, false); renderProducts(allProducts); toast('تم التقييم', 'success'); };
@@ -547,3 +617,39 @@ async function loadReviews(pid) { const c = document.getElementById('reviewsCont
 window.submitReview = async (e) => { e.preventDefault(); const a = document.getElementById('reviewAuthor').value; const t = document.getElementById('reviewText').value; await addDoc(collection(db, "reviews"), { productId:currentProductId, author:a, text:t, date:new Date() }); toast('تم النشر', 'success'); loadReviews(currentProductId); document.getElementById('reviewForm').reset(); };
 const searchInput = document.getElementById('smartSearchInput'); const searchDropdown = document.getElementById('searchResults'); if(searchInput) { searchInput.addEventListener('input', (e) => { const val = e.target.value.toLowerCase(); searchDropdown.innerHTML = ''; if(val.length < 2) { searchDropdown.style.display = 'none'; renderProducts(allProducts); return; } const filtered = allProducts.filter(p => p.name.toLowerCase().includes(val) || p.category.toLowerCase().includes(val)); renderProducts(filtered); if(filtered.length > 0) { searchDropdown.style.display = 'block'; filtered.slice(0, 5).forEach(p => { searchDropdown.innerHTML += `<div class="search-item text-white" onclick="openProductDetails('${p.id}'); document.getElementById('searchResults').style.display='none'"><img src="${p.imageUrl}"><div><div class="fw-bold">${p.name}</div><small class="text-warning">${p.price} EGP</small></div></div>`; }); } else { searchDropdown.style.display = 'none'; } }); }
 window.shareProduct = async () => { const p = allProducts.find(x => x.id === currentProductId); if(!p) return; const shareData = { title: 'متجري', text: `شاهد: ${p.name} بـ ${p.price} EGP`, url: window.location.href }; try { if (navigator.share) await navigator.share(shareData); else { await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`); toast('تم نسخ الرابط', 'success'); } } catch (err) { console.error(err); } };
+// ============================================
+// 🔥 9. الفرز والتصفية المتقدمة (Advanced Filter)
+// ============================================
+window.applySortAndFilter = () => {
+    const sortValue = document.getElementById('sortOptions').value;
+    const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+    
+    // معرفة القسم الحالي (من الزر النشط)
+    const activeBtn = document.querySelector('.cat-btn.active');
+    const currentCat = activeBtn ? activeBtn.innerText : 'الكل';
+
+    // 1. التصفية حسب القسم
+    let filtered = (currentCat === 'الكل') ? allProducts : allProducts.filter(p => p.category === currentCat);
+
+    // 2. التصفية حسب السعر
+    filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
+
+    // 3. الترتيب
+    if(sortValue === 'low') {
+        filtered.sort((a, b) => a.price - b.price);
+    } else if(sortValue === 'high') {
+        filtered.sort((a, b) => b.price - a.price);
+    } else if(sortValue === 'new') {
+        // ترتيب حسب تاريخ الإنشاء (الأحدث أولاً)
+        // ملاحظة: نحتاج للتأكد أن التاريخ محفوظ بشكل يمكن ترتيبه (timestamp)
+        filtered.sort((a, b) => {
+            const dateA = a.createdAt ? a.createdAt.seconds : 0;
+            const dateB = b.createdAt ? b.createdAt.seconds : 0;
+            return dateB - dateA;
+        });
+    }
+
+    // 4. عرض النتائج
+    renderProducts(filtered);
+};
