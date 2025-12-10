@@ -29,10 +29,10 @@
                     data-bs-target="#pills-coupons">🏷️ الكوبونات</button></li>
             <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill"
                     data-bs-target="#pills-support">💬 الدعم</button></li>
-            <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill"
-                    data-bs-target="#pills-settings">⚙️ الإعدادات</button></li>
             <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill" data-bs-target="#pills-users">👥
                     الموظفين</button></li>
+            <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill"
+                    data-bs-target="#pills-settings">⚙️ الإعدادات</button></li>
         </ul>
 
         <div class="tab-content" id="pills-tabContent">
@@ -62,7 +62,13 @@
                                     placeholder="القسم" required></div>
                             <div class="col-md-3"><input type="text" class="form-control form-control-sm"
                                     id="pSubCategory" placeholder="فرعي"></div>
-                            <!-- Stock & Visibility (New) -->
+
+                            <!-- 🔥🔥 حقل تاريخ انتهاء العرض (جديد) 🔥🔥 -->
+                            <div class="col-md-3">
+                                <label class="small text-white-50">نهاية العرض (Flash Sale)</label>
+                                <input type="datetime-local" class="form-control form-control-sm" id="pSaleEnd">
+                            </div>
+
                             <div class="col-md-3"><label class="small text-white-50">الكمية</label><input type="number"
                                     class="form-control form-control-sm" id="pStock" value="100"></div>
                             <div class="col-md-3"><label class="small text-white-50">التوفر</label><select
@@ -101,29 +107,21 @@
                 </div>
             </div>
 
-            <!-- Orders -->
-            <!-- تبويب إدارة الطلبات المتطور (للموبايل) -->
+            <!-- Orders (Cards) -->
             <div class="tab-pane fade" id="pills-orders">
-
-                <!-- 1. شريط الفلترة -->
                 <div class="glass-card p-2 mb-3 d-flex gap-2 align-items-center sticky-top"
                     style="top: 0; z-index: 10; background: rgba(30,30,40,0.95);">
                     <select id="orderFilter" class="form-select form-select-sm" onchange="loadOrders()">
                         <option value="all">عرض الكل</option>
-                        <option value="pending" selected>🟡 طلبات جديدة (Pending)</option>
-                        <option value="shipped">🚚 تم الشحن (Shipped)</option>
-                        <option value="delivered">✅ تم التسليم (Delivered)</option>
-                        <option value="cancelled">❌ ملغي (Cancelled)</option>
+                        <option value="pending" selected>🟡 جديد</option>
+                        <option value="shipped">🚚 شحن</option>
+                        <option value="delivered">✅ تسليم</option>
+                        <option value="cancelled">❌ ملغي</option>
                     </select>
-                    <button class="btn btn-success btn-sm text-nowrap" onclick="exportToExcel()">
-                        <i class="fa-solid fa-file-excel"></i> Excel
-                    </button>
+                    <button class="btn btn-success btn-sm text-nowrap" onclick="exportToExcel()"><i
+                            class="fa-solid fa-file-excel"></i> Excel</button>
                 </div>
-
-                <!-- 2. حاوية الطلبات (كروت) -->
-                <div id="ordersContainer" class="row g-3">
-                    <!-- الطلبات ستظهر هنا كبطاقات -->
-                </div>
+                <div id="ordersContainer" class="row g-3"></div>
             </div>
 
             <!-- Coupons -->
@@ -140,30 +138,23 @@
                 <ul id="couponsList" class="list-group"></ul>
             </div>
 
-            <!-- Support (New) -->
+            <!-- Support -->
             <div class="tab-pane fade" id="pills-support">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="list-group" id="chatUsersList"></div>
                     </div>
                     <div class="col-md-8">
-                        <!-- صندوق شات الأدمن -->
                         <div class="glass-card p-0 overflow-hidden" id="adminChatArea"
                             style="display:none; border: 1px solid rgba(255,255,255,0.2);">
-
-                            <!-- رأس الشات (تم إضافة زر الإغلاق) -->
                             <div
                                 class="d-flex justify-content-between align-items-center bg-dark p-3 border-bottom border-secondary">
                                 <h6 id="chattingWith" class="text-warning m-0 fw-bold"></h6>
-                                <!-- زر الإغلاق الجديد 👇 -->
-                                <button class="btn btn-sm btn-outline-danger" onclick="closeAdminChat()">
-                                    <i class="fa-solid fa-times"></i> إغلاق
-                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="closeAdminChat()"><i
+                                        class="fa-solid fa-times"></i> إغلاق</button>
                             </div>
-
                             <div id="adminChatMessages" class="chat-body bg-dark bg-opacity-50 p-3 mb-0"
                                 style="height:300px; overflow-y:auto;"></div>
-
                             <div class="p-2 border-top border-secondary bg-dark">
                                 <form id="adminChatForm" class="d-flex gap-2">
                                     <input type="text" id="adminChatInput" class="form-control" placeholder="الرد..."
@@ -176,15 +167,7 @@
                 </div>
             </div>
 
-            <!-- Settings -->
-            <div class="tab-pane fade" id="pills-settings">
-                <div class="input-group">
-                    <span class="input-group-text">واتساب</span>
-                    <input type="text" id="adminPhone" class="form-control">
-                    <button class="btn btn-primary" onclick="saveSettings()">حفظ</button>
-                </div>
-            </div>
-            <!-- Users & Roles Management (New) -->
+            <!-- Users -->
             <div class="tab-pane fade" id="pills-users">
                 <div class="glass-card p-3 border border-info mb-3">
                     <h6 class="text-info m-0"><i class="fa-solid fa-users-gear"></i> إدارة الصلاحيات</h6>
@@ -196,18 +179,27 @@
                             <tr>
                                 <th>الاسم</th>
                                 <th>الإيميل</th>
-                                <th>الصلاحية الحالية</th>
-                                <th>تغيير الصلاحية</th>
+                                <th>الصلاحية</th>
+                                <th>تغيير</th>
                             </tr>
                         </thead>
                         <tbody id="usersTableBody"></tbody>
                     </table>
                 </div>
             </div>
+
+            <!-- Settings -->
+            <div class="tab-pane fade" id="pills-settings">
+                <div class="input-group">
+                    <span class="input-group-text">واتساب</span>
+                    <input type="text" id="adminPhone" class="form-control">
+                    <button class="btn btn-primary" onclick="saveSettings()">حفظ</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Edit Modal -->
+    <!-- Edit Modal (With Sale End Date) -->
     <div class="modal fade" id="editProductModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content glass-card bg-dark text-white border-secondary">
@@ -226,11 +218,13 @@
                         <div class="row g-2 mb-2">
                             <div class="col"><label>الكمية</label><input type="number" class="form-control"
                                     id="editStock"></div>
-                            <div class="col"><label>مرئي؟</label><select class="form-select" id="editVisible">
-                                    <option value="true">نعم</option>
-                                    <option value="false">لا</option>
-                                </select></div>
+                            <div class="col"><label>نهاية العرض</label><input type="datetime-local" class="form-control"
+                                    id="editSaleEnd"></div>
                         </div>
+                        <div class="mb-2"><label>مرئي؟</label><select class="form-select" id="editVisible">
+                                <option value="true">نعم</option>
+                                <option value="false">لا</option>
+                            </select></div>
                         <div class="mb-2"><input type="text" class="form-control" id="editSubCategory"></div>
                         <div class="mb-2"><textarea class="form-control" id="editDesc" rows="2"></textarea></div>
                         <div class="mb-2"><textarea class="form-control" id="editImages" rows="3"></textarea></div>
